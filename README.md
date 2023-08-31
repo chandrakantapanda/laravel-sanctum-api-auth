@@ -221,3 +221,32 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
 Route::post("login",[UserController::class,'index']);
 
 ````
+
+
+## Routes with postman
+
+```
+# Public
+
+GET   /api/products
+GET   /api/product/:id
+
+POST   /api/login
+@body: email, password
+
+POST   /api/register
+@body: name, email, password, c_password
+
+
+# Protected
+
+POST   /api/product
+@body: name, slug, description, price
+
+PUT   /api/product/:id
+@body: name, slug, description, price
+
+DELETE  /api/product/:id
+
+POST    /api/logout
+```
