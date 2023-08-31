@@ -8,7 +8,13 @@ This is an example of a REST API using auth tokens with Laravel Sanctum
 
 
 ## Getting Started
+
 ### Step 1: setup database in .env file
+
+```` 
+composer create-project laravel/laravel laravel-sanctum-api
+````
+### Step 2: setup database in .env file
 
 ```` 
 DB_DATABASE=laravel
@@ -16,14 +22,14 @@ DB_USERNAME=root
 DB_PASSWORD= 
 ````
 
-## Step 2:Create a schema for product table.
+## Step 3:Create a schema for product table.
 
 ````javascript
 php artisan make:migration create_products_table
 
 ````
 
-## Step 3:Create a schema for product table.
+## Step 4:Create a schema for product table.
 
 ````javascript
 ../database/migrations/create_products_table.php
@@ -40,14 +46,14 @@ php artisan make:migration create_products_table
 
 ````
 
-## Step 4:Run your database migrations.
+## Step 5:Run your database migrations.
 
 ````javascript
 php artisan migrate
 
 ````
 
-## Step 5:Add the Sanctum's middleware.
+## Step 6:Add the Sanctum's middleware.
 
 ````
 ../app/Http/Kernel.php
@@ -72,13 +78,13 @@ use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 ````
 
 
-## Step 6:Let's create the seeder for the User model
+## Step 7:Let's create the seeder for the User model
 
 ```javascript 
 php artisan make:seeder UsersTableSeeder
 ````
 
-## Step 7:Now let's insert as record
+## Step 8:Now let's insert as record
 
 ```javascript 
 use Illuminate\Support\Facades\DB;
@@ -92,20 +98,20 @@ DB::table('users')->insert([
 ]);
 ````
 
-## Step 8:To seed users table with user
+## Step 9:To seed users table with user
 
 ```javascript 
 php artisan db:seed --class=UsersTableSeeder
 ````
 
 
-## Step 9:  create a controller 
+## Step 10:  create a controller 
 ```javascript 
 	php artisan make:controller API/AuthController
 	php artisan make:controller API/ProductController
 ````
 
-## Step 10:  add these in AuthController  and  /login route in the routes/api.php file:
+## Step 11:  add these in AuthController  and  /login route in the routes/api.php file:
 
 
 ```javascript
@@ -190,7 +196,7 @@ class AuthController extends Controller {
 ````
 
 
-## Step 11: Test with postman, Result will be below
+## Step 12: Test with postman, Result will be below
 
 ```javascript 
 
@@ -207,8 +213,109 @@ class AuthController extends Controller {
 }
 
 ````
+## Step 13:  add these in ProductController 
+```javascript 
 
-## Step 11: Make Details API or any other with secure route  
+<?php
+
+namespace App\Http\Controllers\API;
+
+use App\Http\Controllers\Controller;
+use App\Models\Product;
+use Illuminate\Http\Request;
+use Validator;
+class ProductController extends Controller {
+    public function index()
+    {
+        $products = Product::all();
+        $response = [
+            'success' => true,
+            'message' => 'Products retrieved successfully.',
+            'data'    => $products,
+        ];        
+    return response()->json($response, 200);
+    }
+    public function store(Request $request) {//dd('asila');
+        $request->validate([
+            'name' => 'required',
+            'detail' => 'required',
+            'slug' => 'required',
+            'price' => 'required'
+        ]);
+        $input = $request->all();
+        $product = Product::create($input);
+        $response = [
+            'success' => true,
+            'message' => 'Products retrieved successfully.',
+            'data'    => $product,
+        ];   
+        // return Product::create($request->all());
+    }
+    public function show($id){
+        $product = Product::find($id);
+  
+        if (is_null($product)) {
+            $response = [
+                'success' => false,
+                'message' => 'Product not found.',
+                'data'    => [],
+            ];
+            return response()->json($response, 404); 
+        }
+        $response = [
+            'success' => true,
+            'message' => 'Product retrieved successfully..',
+            'data'    =>  $product,
+        ];        
+        return response()->json($response, 200);
+    }
+
+    public function update(Request $request, $id){
+        $input = $request->all();
+   
+        $validator = Validator::make($input, [
+            'name' => 'required',
+            'detail' => 'required',
+            'price' => 'required'
+        ]);
+   
+        if($validator->fails()){
+            $response = [
+                'success' => false,
+                'message' => 'Validation Error.',
+                'data'    => $validator->errors(),
+            ];
+            return response()->json($response, 404);     
+        }
+        $product = Product::find($id);
+
+        $product->name = $input['name'];
+        $product->detail = $input['detail'];
+        $product->price = $input['price'];
+        $product->update();
+       
+        $response = [
+            'success' => true,
+            'message' => 'Product updatedd successfully..',
+            'data'    =>  $product,
+        ];        
+        return response()->json($response, 200);
+    }
+    public function destroy($id)
+    {
+        Product::destroy($id);
+        $response = [
+            'success' => true,
+            'message' => 'Product deleted successfully..',
+            'data'    =>  [],
+        ];        
+        return response()->json($response, 200);
+    }
+}
+
+
+````
+## Step 14: Make Details API or any other with secure route  
 
 ```javascript 
 
