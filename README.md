@@ -357,3 +357,12 @@ DELETE  /api/product/:id
 
 POST    /api/logout
 ```
+
+# make sure in details api we will use following headers as listed bellow
+```
+'headers' => [
+    'Accept' => 'application/json',
+    'Authorization' => 'Bearer '.accesstoknwhichiscreatedafterlogin,
+
+]
+```
