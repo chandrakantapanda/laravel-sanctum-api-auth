@@ -358,7 +358,7 @@ DELETE  /api/product/:id
 POST    /api/logout
 ```
 
-# make sure in details api we will use following headers as listed bellow
+# Make sure in details api we will use following headers as listed bellow if it is procted i.e after login and put/post case
 ```
 'headers' => [
     'Accept' => 'application/json',
